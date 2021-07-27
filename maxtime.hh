@@ -256,9 +256,15 @@ std::unique_ptr<RideVector> filter_ride_vector
 	int total_size
 )
 {
-	// TODO: implement this function, then delete the return statement below
-	return nullptr;
-
+std::unique_ptr<RideVector> sortedVector(new RideVector);
+for(size_t i = 0; i < source.size(); i++)
+{
+	if((*source[i]).defense() > 0 && ((*source[i]).defense() >= min_time && (*source[i]).defense() <= max_time) && (*sortedVector).size() < total_size)
+	{
+		(*sortedVector).push_back(source[i]);
+	}
+}
+	return sortedVector;
 }
 
 // Compute the optimal set of ride items with a dynamic algorithm.
@@ -303,8 +309,45 @@ std::unique_ptr<RideVector> exhaustive_max_time
 	double total_cost
 )
 {
-	// TODO: implement this function, then delete the return statement below
-	return nullptr;
+	std::unique_ptr<RideVector> best1(new RideVector);
+	size_t n = rides.size();
+	int candidateTotalCost = 0;
+	double candidateTotalTime = 0;
+	int bestTotalCost = 0;
+	double bestTotalTime = 0;
+
+	//ride items vector must be less than 64 to avoid overflow
+	if (rides.size() >= 64)
+	{
+		exit(1);	// if ride size is greater than 64, exit program
+	}
+
+	for (uint64_t bits = 0; bits < pow(2, n); bits++)
+	{
+		std::unique_ptr<RideVector> candidate1(new RideVector);
+
+		for (uint64_t j = 0; j < n; j++)
+		{
+			if (((bits >> j) & 1) == 1)
+			{
+				(*candidate1).push_back(rides[j]);
+			}
+		}
+		
+		// calculate total cost and total time of candidate and best
+		sum_ride_vector(*candidate1, candidateTotalCost, candidateTotalTime);
+		sum_ride_vector(*best1, bestTotalCost, bestTotalTime);
+
+		// move candidate to best if within budget and has greater total time than current best
+		if (candidateTotalCost <= total_cost)
+		{
+			if ((*best1).empty() || candidateTotalTime > bestTotalTime)
+			{
+				*best1 = *candidate1;
+			}
+		}
+	}
+	return best1;
 }
 
 
