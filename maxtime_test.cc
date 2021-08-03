@@ -110,20 +110,20 @@ int main()
 				cost_large
 				;
 			double
-				defense_small,
-				defense_large
+				time_small,
+				time_large
 				;
-			sum_ride_vector(*soln_small, cost_small, defense_small);
-			sum_ride_vector(*soln_large, cost_large, defense_large);
+			sum_ride_vector(*soln_small, cost_small, time_small);
+			sum_ride_vector(*soln_large, cost_large, time_large);
 			
 			//	Precision
-			defense_small	= std::round( defense_small	* 100 ) / 100;
-			defense_large	= std::round( defense_large	* 100 ) / 100;
+			time_small	= std::round( time_small	* 100 ) / 100;
+			time_large	= std::round( time_large	* 100 ) / 100;
 			
 			TEST_EQUAL("Small solution cost",	500,		cost_small);
-			TEST_EQUAL("Small solution defense",	9564.92,	defense_small);
+			TEST_EQUAL("Small solution time",	9564.92,	time_small);
 			TEST_EQUAL("Large solution cost",	5000,		cost_large);
-			TEST_EQUAL("Large solution defense",	82766.449999999997,	defense_large);
+			TEST_EQUAL("Large solution time",	82766.449999999997,	time_large);
 		}
 	);
 	
@@ -191,7 +191,7 @@ int main()
 				std::stringstream ss;
 				ss
 					<< "exhaustive search n = " << n << " (optimal index = " << optimal_index << ")"
-					<< ", expected defense = " << expected_time
+					<< ", expected time = " << expected_time
 					<< " but algorithm found = " << actual_time
 					;
 				TEST_EQUAL(ss.str(), expected_time, actual_time);
@@ -208,7 +208,3 @@ int main()
 	
 	return rubric.run();
 }
-
-
-
-

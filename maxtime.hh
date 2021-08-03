@@ -47,7 +47,7 @@ class RideItem
 		//
 		const std::string& description() const { return _description; }
 		int cost() const { return _cost_dollars; }
-		double defense() const { return _time_minutes; }
+		double time() const { return _time_minutes; }
 
 	//
 	private:
@@ -169,7 +169,7 @@ void sum_ride_vector
 	for (auto& ride : rides)
 	{
 		total_cost += ride->cost();
-		total_time += ride->defense();
+		total_time += ride->time();
 	}
 }
 
@@ -192,7 +192,7 @@ void print_ride_vector(const RideVector& rides)
 				<< "Ye olde " << ride->description()
 				<< " ==> "
 				<< "Cost of " << ride->cost() << " dollars"
-				<< "; time points = " << ride->defense()
+				<< "; time = " << ride->time()
 				<< std::endl
 				;
 		}
@@ -202,7 +202,7 @@ void print_ride_vector(const RideVector& rides)
 		sum_ride_vector(rides, total_cost, total_time);
 		std::cout
 			<< "> Grand total cost: " << total_cost << " dollars" << std::endl
-			<< "> Grand total defense: " << total_time
+			<< "> Grand total time: " << total_time
 			<< std::endl
 			;
 	}
@@ -259,7 +259,7 @@ std::unique_ptr<RideVector> filter_ride_vector
 std::unique_ptr<RideVector> sortedVector(new RideVector);
 for(size_t i = 0; i < source.size(); i++)
 {
-	if((*source[i]).defense() > 0 && ((*source[i]).defense() >= min_time && (*source[i]).defense() <= max_time) && (*sortedVector).size() < total_size)
+	if((*source[i]).time() > 0 && ((*source[i]).time() >= min_time && (*source[i]).time() <= max_time) && (*sortedVector).size() < total_size)
 	{
 		(*sortedVector).push_back(source[i]);
 	}
@@ -282,7 +282,7 @@ std::unique_ptr<RideVector> dynamic_max_time
 	return nullptr;
 }
 
-std::vector<std::vector<RideItem>> getDefenseSubsets(std::vector<RideItem> source)
+std::vector<std::vector<RideItem>> getTimeSubsets(std::vector<RideItem> source)
 {
     std::vector<std::vector<RideItem>> subset, subTemp;
 
@@ -349,12 +349,3 @@ std::unique_ptr<RideVector> exhaustive_max_time
 	}
 	return best1;
 }
-
-
-
-
-
-
-
-
-
