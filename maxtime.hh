@@ -275,11 +275,56 @@ for(size_t i = 0; i < source.size(); i++)
 std::unique_ptr<RideVector> dynamic_max_time
 (
 	const RideVector& rides,
-	int total_cost
+	int total_cost 
 )
 {
-   // TODO: implement this function, then delete the return statement below
-	return nullptr;
+	std::unique_ptr<RideVector> best1(new RideVector); 
+	int n = rides.size();
+
+	// creates the cache 2D vector and set all values to zero
+    std::vector<std::vector<double>> cache;
+    for (int i = 0; i <= n; i++) 
+	{
+        std::vector<double> zero;
+        for (int j = 0; j <= total_cost; j++) 
+		{
+            zero.push_back(0);
+        }
+        cache.push_back(zero);
+    }
+
+	// fills the 2D vector with the max cost/time value
+    for (long unsigned int i = 1; i < cache.size(); i++) 
+	{
+		std::shared_ptr<RideItem> current = rides[i - 1];
+        for (int j = 0; j <= total_cost; j++) 
+		{
+            double value = 0;
+            if (j >= current->cost()) 
+			{
+                value = (cache[i - 1][j - current->cost()]) + current->time();
+            }
+            cache[i][j] = std::max(value, cache[i - 1][j]);
+        }
+    }
+
+	// traceback the entire 2D vector and adds different values into new RideVector
+	int cost = total_cost;
+	for (int i = rides.size(); i >= 0; i--) 
+	{	
+		if (i == 0) 
+		{
+		break;
+		}
+
+		if(cache[i][cost] != cache[i - 1][cost]) 
+		{
+			(*best1).push_back(rides[i - 1]); 
+			cost -= rides[i - 1]->cost();
+		}
+	}
+
+	return best1;
 }
 
 std::vector<std::vector<RideItem>> getTimeSubsets(std::vector<RideItem> source)
@@ -316,7 +361,7 @@ std::unique_ptr<RideVector> exhaustive_max_time
 	int bestTotalCost = 0;
 	double bestTotalTime = 0;
 
-	//ride items vector must be less than 64 to avoid overflow
+	// ride items vector must be less than 64 to avoid overflow
 	if (rides.size() >= 64)
 	{
 		exit(1);	// if ride size is greater than 64, exit program
